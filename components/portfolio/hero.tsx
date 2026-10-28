@@ -43,6 +43,8 @@ function RotatingWord() {
 
 const orbitLogos = ['react', 'nextdotjs', 'nodedotjs', 'postgresql', 'mongodb', 'typescript']
 
+const formatPercent = (value: number) => `${value.toFixed(6)}%`
+
 function OrbitRing() {
   return (
     <div
@@ -62,7 +64,7 @@ function OrbitRing() {
             <div
               key={slug}
               className="absolute -translate-x-1/2 -translate-y-1/2"
-              style={{ left: `${50 + 50 * Math.cos(angle)}%`, top: `${50 + 50 * Math.sin(angle)}%` }}
+              style={{ left: formatPercent(50 + 50 * Math.cos(angle)), top: formatPercent(50 + 50 * Math.sin(angle)) }}
             >
               <motion.span
                 animate={{ rotate: -360 }}
