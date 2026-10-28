@@ -1,7 +1,7 @@
 'use client'
 
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { coreSkills, type Skill } from '@/lib/portfolio-data'
 import { cn } from '@/lib/utils'
 import { Reveal, SectionLabel, SplitText } from './motion-primitives'
@@ -9,8 +9,6 @@ import { Reveal, SectionLabel, SplitText } from './motion-primitives'
 const EASE = [0.22, 1, 0.36, 1] as const
 const RADIUS = 92
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
-const CYCLE_MS = 5000
-
 function Logo({ skill, className }: { skill: Skill; className?: string }) {
   return (
     <img
@@ -157,23 +155,22 @@ function SkillPanel({ skill, index }: { skill: Skill; index: number }) {
 
 export function Skills() {
   const [active, setActive] = useState(0)
-  const [paused, setPaused] = useState(false)
   const scrollLock = useRef(false)
 
   const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
     if (Math.abs(event.deltaY) < 8 || scrollLock.current) return
+
+    const direction = event.deltaY > 0 ? 1 : -1
+    const next = active + direction
+    if (next < 0 || next >= coreSkills.length) return
+
+    event.preventDefault()
     scrollLock.current = true
-    setActive((current) => (current + (event.deltaY > 0 ? 1 : -1) + coreSkills.length) % coreSkills.length)
+    setActive(next)
     window.setTimeout(() => {
       scrollLock.current = false
     }, 650)
   }
-
-  useEffect(() => {
-    if (paused) return
-    const id = setInterval(() => setActive((i) => (i + 1) % coreSkills.length), CYCLE_MS)
-    return () => clearInterval(id)
-  }, [paused, active])
 
   return (
     <section id="skills" className="relative px-6 py-32 md:py-44">
@@ -191,7 +188,7 @@ export function Skills() {
           </div>
           <Reveal delay={0.2}>
             <p className="max-w-sm text-pretty text-muted-foreground">
-              One language, every layer. From pixel-perfect interfaces to the database underneath — hover a tool to dive in.
+              One language, every layer. From pixel-perfect interfaces to the database underneath — scroll through the stack to dive in.
             </p>
           </Reveal>
         </div>
@@ -199,8 +196,6 @@ export function Skills() {
         <Reveal delay={0.1} className="mt-16">
           <div
             className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start"
-            onPointerEnter={() => setPaused(true)}
-            onPointerLeave={() => setPaused(false)}
             onWheel={handleWheel}
           >
             <div role="tablist" aria-label="Core skills" aria-orientation="vertical" className="flex flex-col">
@@ -274,16 +269,7 @@ export function Skills() {
                     >
                       {skill.level}
                     </span>
-                    {isActive && !paused && (
-                      <motion.span
-                        key={`progress-${active}`}
-                        aria-hidden
-                        className="absolute bottom-0 left-4 h-px bg-primary/60"
-                        initial={{ width: 0 }}
-                        animate={{ width: 'calc(100% - 2rem)' }}
-                        transition={{ duration: CYCLE_MS / 1000, ease: 'linear' }}
-                      />
-                    )}
+
                   </button>
                 )
               })}

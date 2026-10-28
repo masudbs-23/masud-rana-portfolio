@@ -264,7 +264,7 @@ export function Hero() {
     <section
       ref={ref}
       id="top"
-      className="relative isolate flex min-h-svh flex-col justify-center overflow-hidden px-6 pb-16 pt-32"
+      className="relative isolate flex min-h-svh flex-col justify-center overflow-hidden px-6 pb-16 pt-40"
     >
       <div aria-hidden className="bg-grid absolute inset-0 -z-20 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_75%)]" />
       <motion.div
