@@ -210,6 +210,18 @@ export function Hero() {
       className="relative isolate flex min-h-svh flex-col justify-center overflow-hidden px-6 pb-16 pt-40"
     >
       <div aria-hidden className="bg-grid absolute inset-0 -z-20 [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_75%)]" />
+      <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 -z-10 w-full max-w-3xl overflow-hidden opacity-35 [mask-image:linear-gradient(90deg,transparent_0%,black_48%,black_100%)] md:opacity-45">
+        <Image
+          src={profile.image}
+          alt=""
+          fill
+          priority
+          sizes="(min-width: 768px) 55vw, 100vw"
+          className="object-cover object-top grayscale mix-blend-screen"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/45 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/20" />
+      </div>
       <motion.div
         aria-hidden
         style={{ scale: orbScale }}
@@ -303,7 +315,7 @@ export function Hero() {
             </motion.div>
           </div>
 
-          <Portrait />
+          <div aria-hidden className="hidden lg:block" />
         </div>
 
         <motion.dl

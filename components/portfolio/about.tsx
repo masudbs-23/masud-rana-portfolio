@@ -45,18 +45,25 @@ export function About() {
           ))}
         </p>
 
-        <div className="mt-20 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {pillars.map((p, i) => (
-            <Reveal key={p.title} delay={i * 0.08}>
-              <div className="group h-full rounded-3xl border border-border bg-card/40 p-6 transition-colors duration-500 hover:border-primary/50 hover:bg-card">
-                <div className="mb-10 grid size-12 place-items-center rounded-2xl bg-secondary transition-all duration-500 group-hover:rotate-[-8deg] group-hover:bg-primary group-hover:text-primary-foreground">
-                  <p.icon className="size-5" />
-                </div>
-                <h3 className="text-lg font-medium">{p.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.text}</p>
-              </div>
-            </Reveal>
-          ))}
+        <div className="relative mt-20 overflow-hidden rounded-[2rem] border border-white/10 bg-card/35 p-3 shadow-2xl shadow-black/20 md:p-5">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_88%_8%,oklch(0.91_0.2_124_/_12%),transparent_30%)]" />
+          <div className="relative grid gap-px overflow-hidden rounded-[1.35rem] bg-white/10 sm:grid-cols-2 lg:grid-cols-4">
+            {pillars.map((p, i) => (
+              <Reveal key={p.title} delay={i * 0.08}>
+                <article className="group relative flex min-h-[13.5rem] flex-col justify-between overflow-hidden bg-background/80 p-6 transition-colors duration-500 hover:bg-card md:p-7">
+                  <div className="flex items-start justify-between">
+                    <span className="font-mono text-[0.65rem] tracking-[0.25em] text-primary/80">0{i + 1}</span>
+                    <p.icon className="size-5 text-muted-foreground transition-colors duration-500 group-hover:text-primary" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <h3 className="text-base font-medium tracking-tight">{p.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.text}</p>
+                  </div>
+                  <div className="absolute bottom-0 left-0 h-px w-0 bg-primary transition-all duration-500 group-hover:w-full" />
+                </article>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>
