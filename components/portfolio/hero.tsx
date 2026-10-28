@@ -8,9 +8,9 @@ import {
   useSpring,
   useTransform,
 } from 'motion/react'
-import { ArrowDownRight, ArrowUpRight, Code2, Sparkles } from 'lucide-react'
+import { ArrowDownRight, ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { profile, stats } from '@/lib/portfolio-data'
 import { Counter, Magnetic, SplitText } from './motion-primitives'
 
@@ -41,33 +41,97 @@ function RotatingWord() {
   )
 }
 
-function FloatingChip({
-  children,
-  className,
-  delay,
-  depth,
-}: {
-  children: React.ReactNode
-  className: string
-  delay: number
-  depth: number
-}) {
+const orbitLogos = ['react', 'nextdotjs', 'nodedotjs', 'postgresql', 'mongodb', 'typescript']
+
+function OrbitRing() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute left-1/2 top-1/2 -z-10 size-[118%] -translate-x-1/2 -translate-y-1/2 sm:size-[132%]"
+    >
+      <div className="absolute inset-0 rounded-full border border-dashed border-foreground/10" />
+      <div className="absolute inset-[14%] rounded-full border border-foreground/[0.06]" />
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+        className="absolute inset-0"
+      >
+        {orbitLogos.map((slug, i) => {
+          const angle = (i / orbitLogos.length) * Math.PI * 2
+          return (
+            <div
+              key={slug}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: `${50 + 50 * Math.cos(angle)}%`, top: `${50 + 50 * Math.sin(angle)}%` }}
+            >
+              <motion.span
+                animate={{ rotate: -360 }}
+                transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
+                className="grid size-10 place-items-center rounded-full border border-border bg-card/90 shadow-lg shadow-black/40 backdrop-blur"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/${slug}/mono.svg`}
+                  alt=""
+                  className="size-4 opacity-80 invert"
+                />
+              </motion.span>
+            </div>
+          )
+        })}
+      </motion.div>
+    </div>
+  )
+}
+
+function RotatingBadge() {
+  const id = useId()
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.8, y: 20 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ delay, type: 'spring', stiffness: 180, damping: 18 }}
-      style={{ transform: `translateZ(${depth}px)` }}
-      className={`absolute z-10 ${className}`}
+      initial={{ opacity: 0, scale: 0.6, rotate: -40 }}
+      animate={{ opacity: 1, scale: 1, rotate: 0 }}
+      transition={{ delay: 1.4, type: 'spring', stiffness: 140, damping: 16 }}
+      style={{ transform: 'translateZ(70px)' }}
+      className="absolute -left-6 top-[38%] z-20 sm:-left-14"
     >
-      <motion.div
-        animate={{ y: [0, -10, 0] }}
-        transition={{ duration: 5 + depth / 20, repeat: Infinity, ease: 'easeInOut' }}
-        className="flex items-center gap-3 rounded-2xl border border-border bg-background/70 px-4 py-3 shadow-2xl shadow-black/40 backdrop-blur-xl"
-      >
-        {children}
-      </motion.div>
+      <div className="relative grid size-28 place-items-center rounded-full border border-border bg-background/80 shadow-2xl shadow-black/50 backdrop-blur-xl">
+        <motion.svg
+          viewBox="0 0 100 100"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+          className="absolute inset-0 size-full text-foreground/80"
+          aria-hidden
+        >
+          <defs>
+            <path id={id} d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
+          </defs>
+          <text className="fill-current font-mono uppercase" fontSize="8.2">
+            <textPath href={`#${id}`} textLength="236" lengthAdjust="spacing">
+              {'Full stack developer \u2022 Open to work \u2022 '}
+            </textPath>
+          </text>
+        </motion.svg>
+        <a
+          href="#contact"
+          aria-label="Get in touch"
+          className="group/badge grid size-12 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_0_30px_-4px_var(--primary)]"
+        >
+          <ArrowUpRight className="size-5 transition-transform duration-500 group-hover/badge:rotate-45" />
+        </a>
+      </div>
     </motion.div>
+  )
+}
+
+function CropMarks() {
+  const base = 'absolute size-4 border-foreground/30'
+  return (
+    <div aria-hidden className="pointer-events-none absolute -inset-4">
+      <span className={`${base} left-0 top-0 border-l border-t`} />
+      <span className={`${base} right-0 top-0 border-r border-t`} />
+      <span className={`${base} bottom-0 left-0 border-b border-l`} />
+      <span className={`${base} bottom-0 right-0 border-b border-r`} />
+    </div>
   )
 }
 
@@ -101,81 +165,89 @@ function Portrait() {
       initial={{ opacity: 0, y: 40, filter: 'blur(12px)' }}
       animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
       transition={{ duration: 1.1, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="relative mx-auto w-full max-w-[400px] [perspective:1200px]"
+      className="relative mx-auto w-full max-w-[340px] [perspective:1400px] sm:max-w-[380px]"
     >
+      <OrbitRing />
       <div
         aria-hidden
-        className="absolute inset-x-6 -bottom-6 top-10 -z-10 rounded-[2.5rem] bg-primary/30 blur-3xl"
+        className="absolute inset-x-10 bottom-0 top-1/3 -z-10 rounded-full bg-primary/25 blur-[90px]"
       />
       <motion.div
         ref={ref}
         onPointerMove={handleMove}
         onPointerLeave={handleLeave}
         style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
-        className="relative"
+        className="group relative"
       >
-        <div className="border-beam relative rounded-[2.25rem] p-px">
-          <div className="relative overflow-hidden rounded-[calc(2.25rem-1px)] bg-card">
-            <div className="relative aspect-[4/5]">
-              <Image
-                src={profile.image}
-                alt={`Portrait of ${profile.name}`}
-                fill
-                priority
-                sizes="(min-width: 1024px) 400px, 90vw"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background via-background/10 to-transparent" />
-              <motion.div aria-hidden style={{ background: glare }} className="pointer-events-none absolute inset-0" />
-            </div>
+        <CropMarks />
 
-            <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-6">
-              <div>
-                <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-primary">
-                  {profile.role}
-                </p>
-                <p className="mt-1 text-2xl font-semibold tracking-tight">{profile.name}</p>
+        <div className="relative rounded-t-[999px] rounded-b-[2.5rem] border border-foreground/10 bg-foreground/[0.02] p-2.5 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.8)] backdrop-blur-sm">
+          <div className="border-beam relative rounded-t-[999px] rounded-b-[2rem] p-px">
+            <div className="relative overflow-hidden rounded-t-[999px] rounded-b-[calc(2rem-1px)] bg-card">
+              <div className="relative aspect-[3/4]">
+                <Image
+                  src={profile.image}
+                  alt={`Portrait of ${profile.name}`}
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 380px, 90vw"
+                  className="object-cover object-top grayscale-[40%] transition-all duration-[1200ms] ease-out group-hover:scale-105 group-hover:grayscale-0"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,transparent_40%,oklch(0.135_0.004_260/0.6))]" />
+                <div aria-hidden className="bg-noise absolute inset-0 opacity-[0.08] mix-blend-overlay" />
+                <motion.div aria-hidden style={{ background: glare }} className="pointer-events-none absolute inset-0" />
+
+                <span className="absolute left-1/2 top-10 -translate-x-1/2 rounded-full border border-foreground/15 bg-background/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.3em] text-foreground/80 backdrop-blur-md">
+                  {'Portfolio \u00b7 2026'}
+                </span>
               </div>
-              <span className="grid size-11 shrink-0 place-items-center rounded-full border border-border bg-background/60 backdrop-blur">
-                <ArrowUpRight className="size-4" />
-              </span>
+
+              <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-[1.4rem] border border-foreground/10 bg-background/50 p-4 pl-5 backdrop-blur-xl">
+                <div className="min-w-0">
+                  <p className="truncate font-serif text-2xl italic leading-none tracking-tight">
+                    {profile.name}
+                  </p>
+                  <p className="mt-1.5 truncate font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
+                    {profile.role}
+                  </p>
+                </div>
+                <span className="flex shrink-0 items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-[11px] font-medium text-primary">
+                  <span className="relative flex size-1.5">
+                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-75" />
+                    <span className="relative inline-flex size-1.5 rounded-full bg-primary" />
+                  </span>
+                  Online
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        <FloatingChip className="-left-6 top-10 md:-left-14" delay={1.3} depth={60}>
-          <span className="grid size-9 place-items-center rounded-xl bg-primary text-primary-foreground">
-            <Code2 className="size-4" />
-          </span>
-          <span className="leading-tight">
-            <span className="block text-sm font-semibold">5+ years</span>
-            <span className="block text-xs text-muted-foreground">Shipping products</span>
-          </span>
-        </FloatingChip>
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1.3, type: 'spring', stiffness: 160, damping: 18 }}
+          style={{ transform: 'translateZ(60px)' }}
+          className="absolute -right-4 top-1/3 z-20 sm:-right-12"
+        >
+          <motion.div
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+            className="rounded-2xl border border-border bg-background/75 p-4 shadow-2xl shadow-black/50 backdrop-blur-xl"
+          >
+            <p className="flex items-baseline gap-1 text-3xl font-semibold tracking-tight">
+              5<span className="text-primary">+</span>
+            </p>
+            <p className="mt-1 font-mono text-[10px] uppercase leading-tight tracking-[0.2em] text-muted-foreground">
+              Years of
+              <br />
+              experience
+            </p>
+          </motion.div>
+        </motion.div>
 
-        <FloatingChip className="-right-4 top-1/2 md:-right-12" delay={1.5} depth={80}>
-          <span className="flex -space-x-2">
-            {['react', 'nextdotjs', 'nodedotjs'].map((slug) => (
-              <span
-                key={slug}
-                className="grid size-8 place-items-center rounded-full border border-border bg-secondary"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/${slug}/mono.svg`}
-                  alt=""
-                  className="size-4 invert"
-                />
-              </span>
-            ))}
-          </span>
-          <span className="text-xs font-medium">Full stack</span>
-        </FloatingChip>
-
-        <FloatingChip className="-left-2 bottom-28 md:-left-10" delay={1.7} depth={40}>
-          <Sparkles className="size-4 text-primary" />
-          <span className="text-xs font-medium">Open to work</span>
-        </FloatingChip>
+        <RotatingBadge />
       </motion.div>
     </motion.div>
   )
