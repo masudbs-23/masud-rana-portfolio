@@ -49,8 +49,7 @@ export function Footer() {
 
   return (
     <footer className="relative px-4 pb-4 md:px-6 md:pb-6">
-      <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-border bg-card/50 backdrop-blur-sm">
-        <div aria-hidden className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/70 to-transparent" />
+      <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] bg-card/50 backdrop-blur-sm">
         <div aria-hidden className="absolute -top-40 left-1/2 h-80 w-[600px] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]" />
         <div aria-hidden className="bg-grid absolute inset-0 opacity-30 [mask-image:linear-gradient(to_bottom,black,transparent_60%)]" />
 
@@ -107,7 +106,7 @@ export function Footer() {
             </ul>
             <a
               href={`mailto:${profile.email}`}
-              className="group mt-8 inline-flex items-center gap-3 border-b border-border pb-1 text-lg font-medium transition-colors hover:border-primary"
+              className="group mt-8 inline-flex items-center gap-3 pb-1 text-lg font-medium transition-colors"
             >
               {profile.email}
               <ArrowUpRight className="size-4 text-primary transition-transform duration-500 group-hover:rotate-45" />
@@ -145,7 +144,7 @@ export function Footer() {
           </motion.p>
         </div>
 
-        <div className="relative flex flex-col items-start justify-between gap-4 border-t border-border px-6 py-6 text-sm text-muted-foreground md:flex-row md:items-center md:px-12">
+        <div className="relative flex flex-col items-start justify-between gap-4 px-6 py-6 text-sm text-muted-foreground md:flex-row md:items-center md:px-12">
           <p>
             {'© '}
             {new Date().getFullYear()} {profile.name}. All rights reserved.
@@ -155,7 +154,7 @@ export function Footer() {
             <a
               href="#top"
               aria-label="Back to top"
-              className="group grid size-12 place-items-center rounded-full border border-border bg-background transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground"
+              className="group grid size-12 place-items-center rounded-full bg-background transition-colors hover:bg-primary hover:text-primary-foreground"
             >
               <ArrowUp className="size-4 transition-transform duration-500 group-hover:-translate-y-0.5" />
             </a>
