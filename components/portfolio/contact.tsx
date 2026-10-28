@@ -21,7 +21,7 @@ export function Contact() {
         className="absolute bottom-0 left-1/2 -z-10 h-[520px] w-[900px] -translate-x-1/2 translate-y-1/3 rounded-full bg-primary/20 blur-[140px]"
       />
       <div className="mx-auto max-w-6xl">
-        <SectionLabel index="05">Contact</SectionLabel>
+        <SectionLabel index="06">Contact</SectionLabel>
 
         <h2 className="mt-8 text-balance text-5xl font-semibold leading-[0.95] tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl">
           <SplitText text="Have an idea?" />

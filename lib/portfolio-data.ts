@@ -20,6 +20,7 @@ export const navLinks = [
   { id: 'skills', label: 'Skills' },
   { id: 'work', label: 'Work' },
   { id: 'experience', label: 'Experience' },
+  { id: 'education', label: 'Education' },
   { id: 'contact', label: 'Contact' },
 ]
 
@@ -185,6 +186,23 @@ export const projects: Project[] = [
     metric: '<80ms latency',
     live: '#',
     code: '#',
+  },
+]
+
+export const education = [
+  {
+    period: '2016 — 2020',
+    degree: 'B.Sc. in Computer Science & Engineering',
+    institution: 'Daffodil International University',
+    description:
+      'Built a strong foundation in software engineering, algorithms and product thinking while turning ideas into practical web and mobile projects.',
+  },
+  {
+    period: '2014 — 2016',
+    degree: 'Higher Secondary Certificate',
+    institution: 'Dhaka Residential Model College',
+    description:
+      'Focused on science and mathematics, discovering an early passion for building things with technology.',
   },
 ]
 

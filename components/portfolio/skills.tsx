@@ -1,7 +1,7 @@
 'use client'
 
 import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { coreSkills, type Skill } from '@/lib/portfolio-data'
 import { cn } from '@/lib/utils'
 import { Reveal, SectionLabel, SplitText } from './motion-primitives'
@@ -158,6 +158,16 @@ function SkillPanel({ skill, index }: { skill: Skill; index: number }) {
 export function Skills() {
   const [active, setActive] = useState(0)
   const [paused, setPaused] = useState(false)
+  const scrollLock = useRef(false)
+
+  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    if (Math.abs(event.deltaY) < 8 || scrollLock.current) return
+    scrollLock.current = true
+    setActive((current) => (current + (event.deltaY > 0 ? 1 : -1) + coreSkills.length) % coreSkills.length)
+    window.setTimeout(() => {
+      scrollLock.current = false
+    }, 650)
+  }
 
   useEffect(() => {
     if (paused) return
@@ -191,6 +201,7 @@ export function Skills() {
             className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start"
             onPointerEnter={() => setPaused(true)}
             onPointerLeave={() => setPaused(false)}
+            onWheel={handleWheel}
           >
             <div role="tablist" aria-label="Core skills" aria-orientation="vertical" className="flex flex-col">
               {coreSkills.map((skill, i) => {

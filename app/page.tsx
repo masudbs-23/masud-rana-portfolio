@@ -1,6 +1,7 @@
 import { About } from '@/components/portfolio/about'
 import { CursorGlow, ScrollProgress } from '@/components/portfolio/ambient'
 import { Contact } from '@/components/portfolio/contact'
+import { Education } from '@/components/portfolio/education'
 import { Experience } from '@/components/portfolio/experience'
 import { Footer } from '@/components/portfolio/footer'
 import { Hero } from '@/components/portfolio/hero'
@@ -23,6 +24,7 @@ export default function Page() {
         <Skills />
         <Projects />
         <Experience />
+        <Education />
         <Contact />
       </main>
       <Footer />
