@@ -94,15 +94,16 @@ function SkillPanel({ skill, index }: { skill: Skill; index: number }) {
   return (
     <div
       ref={ref}
-      className="sticky h-[calc(100svh-9rem)] max-h-[680px] min-h-[520px]"
+      className="sticky h-[calc(100svh-15rem)] max-h-[560px] min-h-[420px]"
       style={{ top: `calc(6.5rem + ${index * 20}px)` }}
     >
-      <motion.div style={{ scale: cardScale }} className="relative h-full rounded-[2rem] p-px">
-        <div aria-hidden className="border-beam absolute inset-0 rounded-[2rem] opacity-70" />
-        <div className="relative h-full overflow-hidden rounded-[calc(2rem-1px)] bg-card">
-        <div aria-hidden className="bg-grid absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
+      <motion.div style={{ scale: cardScale }} className="relative h-full rounded-[1.75rem] p-px">
+        <div aria-hidden className="border-beam absolute inset-0 rounded-[1.75rem] opacity-60" />
+        <div className="relative h-full overflow-hidden rounded-[calc(1.75rem-1px)] bg-card/95 shadow-[0_24px_80px_oklch(0_0_0/22%)]">
+        <div aria-hidden className="bg-grid absolute inset-0 opacity-25 [mask-image:radial-gradient(ellipse_at_top,black,transparent_65%)]" />
+        <div aria-hidden className="absolute -right-24 -top-24 size-64 rounded-full bg-primary/10 blur-3xl" />
 
-        <div className="relative flex items-center justify-between border-b border-border px-6 py-4">
+        <div className="relative flex items-center justify-between border-b border-border/70 px-5 py-3.5">
           <div className="flex items-center gap-1.5" aria-hidden>
             <span className="size-2.5 rounded-full bg-foreground/15" />
             <span className="size-2.5 rounded-full bg-foreground/15" />
