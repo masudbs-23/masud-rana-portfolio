@@ -96,6 +96,10 @@ function CropMarks() {
   )
 }
 
+function RotatingBadge() {
+  return null
+}
+
 function Portrait() {
   const ref = useRef<HTMLDivElement>(null)
   const mx = useMotionValue(0)
