@@ -275,7 +275,13 @@ export function Skills() {
               })}
             </div>
 
-            <div id="skill-panel" role="tabpanel" aria-labelledby={`skill-tab-${active}`} className="lg:sticky lg:top-28">
+            <div
+              id="skill-panel"
+              role="tabpanel"
+              aria-live="polite"
+              aria-labelledby={`skill-tab-${active}`}
+              className="lg:sticky lg:top-28"
+            >
               <SkillPanel skill={coreSkills[active]} index={active} />
             </div>
           </div>
