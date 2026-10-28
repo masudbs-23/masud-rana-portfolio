@@ -10,7 +10,7 @@ import {
 } from 'motion/react'
 import { ArrowDownRight, ArrowUpRight } from 'lucide-react'
 import Image from 'next/image'
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { profile, stats } from '@/lib/portfolio-data'
 import { Counter, Magnetic, SplitText } from './motion-primitives'
 
@@ -84,45 +84,6 @@ function OrbitRing() {
   )
 }
 
-function RotatingBadge() {
-  const id = useId()
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.6, rotate: -40 }}
-      animate={{ opacity: 1, scale: 1, rotate: 0 }}
-      transition={{ delay: 1.4, type: 'spring', stiffness: 140, damping: 16 }}
-      style={{ transform: 'translateZ(70px)' }}
-      className="absolute -left-6 top-[38%] z-20 sm:-left-14"
-    >
-      <div className="relative grid size-28 place-items-center rounded-full border border-border bg-background/80 shadow-2xl shadow-black/50 backdrop-blur-xl">
-        <motion.svg
-          viewBox="0 0 100 100"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-          className="absolute inset-0 size-full text-foreground/80"
-          aria-hidden
-        >
-          <defs>
-            <path id={id} d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0" />
-          </defs>
-          <text className="fill-current font-mono uppercase" fontSize="8.2">
-            <textPath href={`#${id}`} textLength="236" lengthAdjust="spacing">
-              {'Full stack developer \u2022 Open to work \u2022 '}
-            </textPath>
-          </text>
-        </motion.svg>
-        <a
-          href="#contact"
-          aria-label="Get in touch"
-          className="group/badge grid size-12 place-items-center rounded-full bg-primary text-primary-foreground shadow-[0_0_30px_-4px_var(--primary)]"
-        >
-          <ArrowUpRight className="size-5 transition-transform duration-500 group-hover/badge:rotate-45" />
-        </a>
-      </div>
-    </motion.div>
-  )
-}
-
 function CropMarks() {
   const base = 'absolute size-4 border-foreground/30'
   return (
@@ -181,9 +142,9 @@ function Portrait() {
       >
         <CropMarks />
 
-        <div className="relative rounded-t-[999px] rounded-b-[2.5rem] border border-foreground/10 bg-foreground/[0.02] p-2.5 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.8)] backdrop-blur-sm">
-          <div className="border-beam relative rounded-t-[999px] rounded-b-[2rem] p-px">
-            <div className="relative overflow-hidden rounded-t-[999px] rounded-b-[calc(2rem-1px)] bg-card">
+        <div className="relative rounded-[2.5rem] border border-foreground/10 bg-foreground/[0.02] p-2.5 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.8)] backdrop-blur-sm">
+          <div className="border-beam relative rounded-[2rem] p-px">
+            <div className="relative overflow-hidden rounded-[calc(2rem-1px)] bg-card">
               <div className="relative aspect-[3/4]">
                 <Image
                   src={profile.image}
@@ -203,23 +164,6 @@ function Portrait() {
                 </span>
               </div>
 
-              <div className="absolute inset-x-3 bottom-3 flex items-center justify-between gap-3 rounded-[1.4rem] border border-foreground/10 bg-background/50 p-4 pl-5 backdrop-blur-xl">
-                <div className="min-w-0">
-                  <p className="truncate font-serif text-2xl italic leading-none tracking-tight">
-                    {profile.name}
-                  </p>
-                  <p className="mt-1.5 truncate font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground">
-                    {profile.role}
-                  </p>
-                </div>
-                <span className="flex shrink-0 items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1.5 text-[11px] font-medium text-primary">
-                  <span className="relative flex size-1.5">
-                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-75" />
-                    <span className="relative inline-flex size-1.5 rounded-full bg-primary" />
-                  </span>
-                  Online
-                </span>
-              </div>
             </div>
           </div>
         </div>
@@ -247,7 +191,6 @@ function Portrait() {
           </motion.div>
         </motion.div>
 
-        <RotatingBadge />
       </motion.div>
     </motion.div>
   )
