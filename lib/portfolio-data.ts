@@ -37,11 +37,17 @@ export type Skill = {
   level: number
   blurb: string
   tags: string[]
+  layer: string
+  years: number
+  shipped: number
 }
 
 export const coreSkills: Skill[] = [
   {
     name: 'React',
+    layer: 'Frontend',
+    years: 5,
+    shipped: 32,
     logo: icon('react'),
     level: 96,
     blurb: 'Component systems, hooks, state machines and buttery-smooth UIs.',
@@ -49,6 +55,9 @@ export const coreSkills: Skill[] = [
   },
   {
     name: 'Next.js',
+    layer: 'Frontend',
+    years: 4,
+    shipped: 24,
     logo: icon('nextdotjs', 'mono'),
     invert: true,
     level: 94,
@@ -57,6 +66,9 @@ export const coreSkills: Skill[] = [
   },
   {
     name: 'React Native',
+    layer: 'Mobile',
+    years: 3,
+    shipped: 11,
     logo: icon('expo', 'mono'),
     invert: true,
     level: 88,
@@ -65,6 +77,9 @@ export const coreSkills: Skill[] = [
   },
   {
     name: 'Node.js',
+    layer: 'Backend',
+    years: 5,
+    shipped: 28,
     logo: icon('nodedotjs'),
     level: 92,
     blurb: 'Scalable REST and GraphQL services, queues and realtime sockets.',
@@ -72,6 +87,9 @@ export const coreSkills: Skill[] = [
   },
   {
     name: 'PostgreSQL',
+    layer: 'Database',
+    years: 4,
+    shipped: 18,
     logo: icon('postgresql'),
     level: 89,
     blurb: 'Relational modeling, indexing, migrations and query tuning.',
@@ -79,6 +97,9 @@ export const coreSkills: Skill[] = [
   },
   {
     name: 'MongoDB',
+    layer: 'Database',
+    years: 5,
+    shipped: 21,
     logo: icon('mongodb'),
     level: 90,
     blurb: 'Document schemas, aggregation pipelines and Atlas search.',

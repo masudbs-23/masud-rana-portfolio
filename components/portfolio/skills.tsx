@@ -1,103 +1,173 @@
 'use client'
 
-import { motion, useMotionTemplate, useMotionValue, useSpring } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
+import { useEffect, useState } from 'react'
 import { coreSkills, type Skill } from '@/lib/portfolio-data'
 import { cn } from '@/lib/utils'
 import { Reveal, SectionLabel, SplitText } from './motion-primitives'
 
-function SkillCard({ skill, index, featured }: { skill: Skill; index: number; featured?: boolean }) {
-  const mx = useMotionValue(-300)
-  const my = useMotionValue(-300)
-  const rx = useSpring(0, { stiffness: 200, damping: 20 })
-  const ry = useSpring(0, { stiffness: 200, damping: 20 })
-  const spotlight = useMotionTemplate`radial-gradient(420px circle at ${mx}px ${my}px, color-mix(in oklch, var(--primary) 16%, transparent), transparent 70%)`
+const EASE = [0.22, 1, 0.36, 1] as const
+const RADIUS = 92
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS
+const CYCLE_MS = 5000
 
+function Logo({ skill, className }: { skill: Skill; className?: string }) {
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.8, delay: index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-      onPointerMove={(e) => {
-        const rect = e.currentTarget.getBoundingClientRect()
-        const px = e.clientX - rect.left
-        const py = e.clientY - rect.top
-        mx.set(px)
-        my.set(py)
-        ry.set((px / rect.width - 0.5) * 8)
-        rx.set(-(py / rect.height - 0.5) * 8)
-      }}
-      onPointerLeave={() => {
-        mx.set(-300)
-        my.set(-300)
-        rx.set(0)
-        ry.set(0)
-      }}
-      style={{ rotateX: rx, rotateY: ry, transformPerspective: 1000 }}
-      data-cursor
-      className={cn(
-        'group relative flex flex-col overflow-hidden rounded-3xl border border-border bg-card/40 p-7 transition-colors duration-500 hover:border-primary/40',
-        featured && 'md:col-span-2',
-      )}
-    >
-      <motion.div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: spotlight }} />
+    <img
+      src={skill.logo}
+      alt=""
+      aria-hidden
+      className={cn(className, skill.invert && 'invert')}
+      loading="lazy"
+    />
+  )
+}
 
-      <div className="relative flex items-start justify-between">
-        <div className="grid size-14 place-items-center rounded-2xl border border-border bg-background transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6">
-          <img
-            src={skill.logo}
-            alt={`${skill.name} logo`}
-            width={28}
-            height={28}
-            className={cn('size-7', skill.invert && 'invert')}
-            loading="lazy"
-          />
-        </div>
-        <span className="font-mono text-xs text-muted-foreground">0{index + 1}</span>
-      </div>
+function Gauge({ skill }: { skill: Skill }) {
+  const ticks = Array.from({ length: 60 })
+  return (
+    <div className="relative mx-auto grid aspect-square w-full max-w-[300px] place-items-center">
+      <div aria-hidden className="absolute inset-[18%] rounded-full bg-primary/15 blur-3xl" />
 
-      <div className="relative mt-auto pt-12">
-        <h3 className="text-2xl font-semibold tracking-tight md:text-3xl">{skill.name}</h3>
-        <p className="mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">{skill.blurb}</p>
-
-        <ul className="mt-5 flex flex-wrap gap-2">
-          {skill.tags.map((tag) => (
-            <li key={tag} className="rounded-full border border-border px-3 py-1 text-xs text-muted-foreground">
-              {tag}
-            </li>
-          ))}
-        </ul>
-
-        <div className="mt-6">
-          <div className="mb-2 flex justify-between font-mono text-xs">
-            <span className="text-muted-foreground">Proficiency</span>
-            <span className="text-primary">{skill.level}%</span>
-          </div>
-          <div
-            className="h-1 overflow-hidden rounded-full bg-secondary"
-            role="progressbar"
-            aria-label={`${skill.name} proficiency`}
-            aria-valuenow={skill.level}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          >
-            <motion.div
-              className="h-full rounded-full bg-primary"
-              initial={{ width: 0 }}
-              whileInView={{ width: `${skill.level}%` }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.6, delay: 0.3 + index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+      <svg viewBox="0 0 240 240" className="absolute inset-0 size-full -rotate-90" aria-hidden>
+        {ticks.map((_, i) => {
+          const angle = (i / ticks.length) * Math.PI * 2
+          const inner = 108
+          const outer = i % 5 === 0 ? 116 : 112
+          return (
+            <line
+              key={i}
+              x1={120 + Math.cos(angle) * inner}
+              y1={120 + Math.sin(angle) * inner}
+              x2={120 + Math.cos(angle) * outer}
+              y2={120 + Math.sin(angle) * outer}
+              stroke="currentColor"
+              strokeWidth={1}
+              className={cn(
+                'transition-colors duration-700',
+                i / ticks.length < skill.level / 100 ? 'text-primary/70' : 'text-foreground/10',
+              )}
             />
+          )
+        })}
+        <circle cx="120" cy="120" r={RADIUS} fill="none" stroke="currentColor" strokeWidth="2" className="text-foreground/[0.06]" />
+        <motion.circle
+          cx="120"
+          cy="120"
+          r={RADIUS}
+          fill="none"
+          stroke="var(--primary)"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeDasharray={CIRCUMFERENCE}
+          initial={{ strokeDashoffset: CIRCUMFERENCE }}
+          animate={{ strokeDashoffset: CIRCUMFERENCE * (1 - skill.level / 100) }}
+          transition={{ duration: 1.4, ease: EASE }}
+          style={{ filter: 'drop-shadow(0 0 6px var(--primary))' }}
+        />
+      </svg>
+
+      <div aria-hidden className="absolute inset-[24%] animate-spin-slow rounded-full border border-dashed border-foreground/10" />
+
+      <div className="relative grid size-[38%] place-items-center rounded-full border border-border bg-background/80 shadow-[inset_0_1px_0_oklch(1_0_0/8%)] backdrop-blur">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={skill.name}
+            initial={{ opacity: 0, scale: 0.6, rotate: -30, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, scale: 1, rotate: 0, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, scale: 0.6, rotate: 30, filter: 'blur(6px)' }}
+            transition={{ duration: 0.5, ease: EASE }}
+          >
+            <Logo skill={skill} className="size-12 md:size-14" />
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  )
+}
+
+function SkillPanel({ skill, index }: { skill: Skill; index: number }) {
+  return (
+    <div className="relative rounded-[2rem] p-px">
+      <div aria-hidden className="border-beam absolute inset-0 rounded-[2rem] opacity-70" />
+      <div className="relative overflow-hidden rounded-[calc(2rem-1px)] bg-card">
+        <div aria-hidden className="bg-grid absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
+
+        <div className="relative flex items-center justify-between border-b border-border px-6 py-4">
+          <div className="flex items-center gap-1.5" aria-hidden>
+            <span className="size-2.5 rounded-full bg-foreground/15" />
+            <span className="size-2.5 rounded-full bg-foreground/15" />
+            <span className="size-2.5 rounded-full bg-primary" />
           </div>
+          <span className="font-mono text-xs text-muted-foreground">
+            {'~/stack/'}
+            <span className="text-foreground">{skill.name.toLowerCase().replace(/[\s.]/g, '')}</span>
+          </span>
+          <span className="font-mono text-xs text-muted-foreground">{`0${index + 1}/0${coreSkills.length}`}</span>
+        </div>
+
+        <div className="relative grid gap-8 p-6 md:p-8 sm:grid-cols-[1fr_1.1fr] sm:items-center">
+          <Gauge skill={skill} />
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={skill.name}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.45, ease: EASE }}
+            >
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">{skill.layer}</p>
+              <h3 className="mt-3 text-4xl font-semibold tracking-tighter md:text-5xl">{skill.name}</h3>
+              <p className="mt-4 text-pretty text-sm leading-relaxed text-muted-foreground">{skill.blurb}</p>
+
+              <ul className="mt-6 flex flex-wrap gap-2">
+                {skill.tags.map((tag, i) => (
+                  <motion.li
+                    key={tag}
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.15 + i * 0.06, ease: EASE }}
+                    className="rounded-full border border-border bg-background/60 px-3 py-1 text-xs"
+                  >
+                    {tag}
+                  </motion.li>
+                ))}
+              </ul>
+
+              <dl className="mt-8 grid grid-cols-3 divide-x divide-border rounded-2xl border border-border bg-background/40">
+                {[
+                  { label: 'Mastery', value: `${skill.level}%` },
+                  { label: 'Years', value: `${skill.years}+` },
+                  { label: 'Shipped', value: skill.shipped },
+                ].map((stat) => (
+                  <div key={stat.label} className="px-4 py-3">
+                    <dt className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{stat.label}</dt>
+                    <dd className="mt-1 text-xl font-semibold tracking-tight">{stat.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
-    </motion.article>
+    </div>
   )
 }
 
 export function Skills() {
+  const [active, setActive] = useState(0)
+  const [paused, setPaused] = useState(false)
+
+  useEffect(() => {
+    if (paused) return
+    const id = setInterval(() => setActive((i) => (i + 1) % coreSkills.length), CYCLE_MS)
+    return () => clearInterval(id)
+  }, [paused, active])
+
   return (
     <section id="skills" className="relative px-6 py-32 md:py-44">
+      <div aria-hidden className="absolute right-0 top-1/3 -z-10 h-[420px] w-[520px] rounded-full bg-primary/10 blur-[140px]" />
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
           <div>
@@ -111,16 +181,108 @@ export function Skills() {
           </div>
           <Reveal delay={0.2}>
             <p className="max-w-sm text-pretty text-muted-foreground">
-              A modern, battle-tested JavaScript stack I use to ship production apps across web, mobile and the server.
+              One language, every layer. From pixel-perfect interfaces to the database underneath — hover a tool to dive in.
             </p>
           </Reveal>
         </div>
 
-        <div className="mt-16 grid gap-4 md:grid-cols-3">
-          {coreSkills.map((skill, i) => (
-            <SkillCard key={skill.name} skill={skill} index={i} featured={i === 0 || i === 5} />
-          ))}
-        </div>
+        <Reveal delay={0.1} className="mt-16">
+          <div
+            className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start"
+            onPointerEnter={() => setPaused(true)}
+            onPointerLeave={() => setPaused(false)}
+          >
+            <div role="tablist" aria-label="Core skills" aria-orientation="vertical" className="flex flex-col">
+              {coreSkills.map((skill, i) => {
+                const isActive = i === active
+                return (
+                  <button
+                    key={skill.name}
+                    type="button"
+                    role="tab"
+                    id={`skill-tab-${i}`}
+                    aria-selected={isActive}
+                    aria-controls="skill-panel"
+                    onClick={() => setActive(i)}
+                    onPointerEnter={() => setActive(i)}
+                    onFocus={() => setActive(i)}
+                    data-cursor
+                    className="group relative flex items-center gap-4 border-b border-border px-4 py-5 text-left outline-none first:border-t md:gap-6"
+                  >
+                    {isActive && (
+                      <motion.span
+                        layoutId="skill-highlight"
+                        aria-hidden
+                        className="absolute inset-0 rounded-2xl border border-primary/30 bg-primary/[0.07]"
+                        transition={{ type: 'spring', stiffness: 380, damping: 32 }}
+                      />
+                    )}
+                    <span
+                      className={cn(
+                        'relative font-mono text-xs transition-colors',
+                        isActive ? 'text-primary' : 'text-muted-foreground',
+                      )}
+                    >
+                      {`0${i + 1}`}
+                    </span>
+                    <span
+                      className={cn(
+                        'relative grid size-10 shrink-0 place-items-center rounded-xl border bg-background transition-all duration-500',
+                        isActive ? 'border-primary/40 scale-110' : 'border-border grayscale group-hover:grayscale-0',
+                      )}
+                    >
+                      <Logo skill={skill} className="size-5" />
+                    </span>
+                    <span className="relative flex-1">
+                      <span
+                        className={cn(
+                          'block text-xl font-semibold tracking-tight transition-all duration-500 md:text-2xl',
+                          isActive ? 'translate-x-1 text-foreground' : 'text-muted-foreground',
+                        )}
+                      >
+                        {skill.name}
+                      </span>
+                      <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                        {skill.layer}
+                      </span>
+                    </span>
+                    <span className="relative hidden w-24 sm:block" aria-hidden>
+                      <span className="block h-px w-full bg-border" />
+                      <motion.span
+                        className="absolute left-0 top-0 block h-px bg-primary"
+                        initial={false}
+                        animate={{ width: isActive ? `${skill.level}%` : '0%' }}
+                        transition={{ duration: 0.8, ease: EASE }}
+                      />
+                    </span>
+                    <span
+                      className={cn(
+                        'relative w-10 text-right font-mono text-sm tabular-nums transition-colors',
+                        isActive ? 'text-primary' : 'text-muted-foreground',
+                      )}
+                    >
+                      {skill.level}
+                    </span>
+                    {isActive && !paused && (
+                      <motion.span
+                        key={`progress-${active}`}
+                        aria-hidden
+                        className="absolute bottom-0 left-4 h-px bg-primary/60"
+                        initial={{ width: 0 }}
+                        animate={{ width: 'calc(100% - 2rem)' }}
+                        transition={{ duration: CYCLE_MS / 1000, ease: 'linear' }}
+                      />
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+
+            <div id="skill-panel" role="tabpanel" aria-labelledby={`skill-tab-${active}`} className="lg:sticky lg:top-28">
+              <SkillPanel skill={coreSkills[active]} index={active} />
+            </div>
+          </div>
+        </Reveal>
       </div>
     </section>
   )

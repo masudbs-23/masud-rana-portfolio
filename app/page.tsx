@@ -2,6 +2,7 @@ import { About } from '@/components/portfolio/about'
 import { CursorGlow, ScrollProgress } from '@/components/portfolio/ambient'
 import { Contact } from '@/components/portfolio/contact'
 import { Experience } from '@/components/portfolio/experience'
+import { Footer } from '@/components/portfolio/footer'
 import { Hero } from '@/components/portfolio/hero'
 import { Nav } from '@/components/portfolio/nav'
 import { Projects } from '@/components/portfolio/projects'
@@ -24,6 +25,7 @@ export default function Page() {
         <Experience />
         <Contact />
       </main>
+      <Footer />
     </>
   )
 }
