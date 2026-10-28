@@ -135,10 +135,6 @@ function Portrait() {
       className="relative mx-auto w-full max-w-[340px] [perspective:1400px] sm:max-w-[380px]"
     >
       <OrbitRing />
-      <div
-        aria-hidden
-        className="absolute inset-x-10 bottom-0 top-1/3 -z-10 rounded-full bg-primary/25 blur-[90px]"
-      />
       <motion.div
         ref={ref}
         onPointerMove={handleMove}
@@ -148,10 +144,9 @@ function Portrait() {
       >
         <CropMarks />
 
-        <div className="relative rounded-[2.5rem] border border-foreground/10 bg-foreground/[0.02] p-2.5 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.8)] backdrop-blur-sm">
-          <div className="border-beam relative rounded-[2rem] p-px">
-            <div className="relative overflow-hidden rounded-[calc(2rem-1px)] bg-card">
-              <div className="relative aspect-[3/4]">
+        <div className="relative aspect-square overflow-hidden rounded-full">
+          <div className="relative h-full w-full overflow-hidden rounded-full">
+            <div className="relative h-full w-full">
                 <Image
                   src={profile.image}
                   alt={`Portrait of ${profile.name}`}
@@ -172,7 +167,6 @@ function Portrait() {
 
             </div>
           </div>
-        </div>
 
         <motion.div
           initial={{ opacity: 0, x: 30 }}
