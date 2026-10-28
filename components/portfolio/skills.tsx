@@ -1,7 +1,7 @@
 'use client'
 
-import { AnimatePresence, motion } from 'motion/react'
-import { useRef, useState } from 'react'
+import { AnimatePresence, motion, useScroll, useTransform } from 'motion/react'
+import { useRef } from 'react'
 import { coreSkills, type Skill } from '@/lib/portfolio-data'
 import { cn } from '@/lib/utils'
 import { Reveal, SectionLabel, SplitText } from './motion-primitives'
@@ -85,10 +85,19 @@ function Gauge({ skill }: { skill: Skill }) {
 }
 
 function SkillPanel({ skill, index }: { skill: Skill; index: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'start start'] })
+  const cardScale = useTransform(scrollYProgress, [0, 1], [0.94, 1])
+
   return (
-    <div className="relative rounded-[2rem] p-px">
-      <div aria-hidden className="border-beam absolute inset-0 rounded-[2rem] opacity-70" />
-      <div className="relative overflow-hidden rounded-[calc(2rem-1px)] bg-card">
+    <div
+      ref={ref}
+      className="sticky h-[calc(100svh-9rem)] max-h-[680px] min-h-[520px]"
+      style={{ top: `calc(6.5rem + ${index * 20}px)` }}
+    >
+      <motion.div style={{ scale: cardScale }} className="relative h-full rounded-[2rem] p-px">
+        <div aria-hidden className="border-beam absolute inset-0 rounded-[2rem] opacity-70" />
+        <div className="relative h-full overflow-hidden rounded-[calc(2rem-1px)] bg-card">
         <div aria-hidden className="bg-grid absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" />
 
         <div className="relative flex items-center justify-between border-b border-border px-6 py-4">
@@ -149,29 +158,12 @@ function SkillPanel({ skill, index }: { skill: Skill; index: number }) {
           </AnimatePresence>
         </div>
       </div>
+    </motion.div>
     </div>
   )
 }
 
 export function Skills() {
-  const [active, setActive] = useState(0)
-  const scrollLock = useRef(false)
-
-  const handleWheel = (event: React.WheelEvent<HTMLDivElement>) => {
-    if (Math.abs(event.deltaY) < 8 || scrollLock.current) return
-
-    const direction = event.deltaY > 0 ? 1 : -1
-    const next = active + direction
-    if (next < 0 || next >= coreSkills.length) return
-
-    event.preventDefault()
-    scrollLock.current = true
-    setActive(next)
-    window.setTimeout(() => {
-      scrollLock.current = false
-    }, 650)
-  }
-
   return (
     <section id="skills" className="relative px-6 py-32 md:py-44">
       <div aria-hidden className="absolute right-0 top-1/3 -z-10 h-[420px] w-[520px] rounded-full bg-primary/10 blur-[140px]" />
@@ -188,102 +180,16 @@ export function Skills() {
           </div>
           <Reveal delay={0.2}>
             <p className="max-w-sm text-pretty text-muted-foreground">
-              One language, every layer. From pixel-perfect interfaces to the database underneath — scroll through the stack to dive in.
+              One language, every layer. Scroll through the stack to explore each tool, just like the work above.
             </p>
           </Reveal>
         </div>
 
         <Reveal delay={0.1} className="mt-16">
-          <div
-            className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start"
-            onWheel={handleWheel}
-          >
-            <div role="tablist" aria-label="Core skills" aria-orientation="vertical" className="flex flex-col">
-              {coreSkills.map((skill, i) => {
-                const isActive = i === active
-                return (
-                  <button
-                    key={skill.name}
-                    type="button"
-                    role="tab"
-                    id={`skill-tab-${i}`}
-                    aria-selected={isActive}
-                    aria-controls="skill-panel"
-                    onClick={() => setActive(i)}
-                    onPointerEnter={() => setActive(i)}
-                    onFocus={() => setActive(i)}
-                    data-cursor
-                    className="group relative flex items-center gap-4 border-b border-border px-4 py-5 text-left outline-none first:border-t md:gap-6"
-                  >
-                    {isActive && (
-                      <motion.span
-                        layoutId="skill-highlight"
-                        aria-hidden
-                        className="absolute inset-0 rounded-2xl border border-primary/30 bg-primary/[0.07]"
-                        transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                      />
-                    )}
-                    <span
-                      className={cn(
-                        'relative font-mono text-xs transition-colors',
-                        isActive ? 'text-primary' : 'text-muted-foreground',
-                      )}
-                    >
-                      {`0${i + 1}`}
-                    </span>
-                    <span
-                      className={cn(
-                        'relative grid size-10 shrink-0 place-items-center rounded-xl border bg-background transition-all duration-500',
-                        isActive ? 'border-primary/40 scale-110' : 'border-border grayscale group-hover:grayscale-0',
-                      )}
-                    >
-                      <Logo skill={skill} className="size-5" />
-                    </span>
-                    <span className="relative flex-1">
-                      <span
-                        className={cn(
-                          'block text-xl font-semibold tracking-tight transition-all duration-500 md:text-2xl',
-                          isActive ? 'translate-x-1 text-foreground' : 'text-muted-foreground',
-                        )}
-                      >
-                        {skill.name}
-                      </span>
-                      <span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-                        {skill.layer}
-                      </span>
-                    </span>
-                    <span className="relative hidden w-24 sm:block" aria-hidden>
-                      <span className="block h-px w-full bg-border" />
-                      <motion.span
-                        className="absolute left-0 top-0 block h-px bg-primary"
-                        initial={false}
-                        animate={{ width: isActive ? `${skill.level}%` : '0%' }}
-                        transition={{ duration: 0.8, ease: EASE }}
-                      />
-                    </span>
-                    <span
-                      className={cn(
-                        'relative w-10 text-right font-mono text-sm tabular-nums transition-colors',
-                        isActive ? 'text-primary' : 'text-muted-foreground',
-                      )}
-                    >
-                      {skill.level}
-                    </span>
-
-                  </button>
-                )
-              })}
-            </div>
-
-            <div
-              id="skill-panel"
-              role="tabpanel"
-              aria-live="polite"
-              aria-labelledby={`skill-tab-${active}`}
-              className="lg:sticky lg:top-28"
-            >
-              <SkillPanel skill={coreSkills[active]} index={active} />
-            </div>
+          <div className="flex flex-col gap-[25vh]">
+            {coreSkills.map((skill, index) => (
+              <SkillPanel key={skill.name} skill={skill} index={index} />
+            ))}
           </div>
         </Reveal>
       </div>
