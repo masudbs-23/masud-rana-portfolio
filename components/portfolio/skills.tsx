@@ -9,6 +9,8 @@ import { Reveal, SectionLabel, SplitText } from './motion-primitives'
 const EASE = [0.22, 1, 0.36, 1] as const
 const RADIUS = 92
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
+const formatSvgNumber = (value: number) => value.toFixed(6)
+
 function Logo({ skill, className }: { skill: Skill; className?: string }) {
   return (
     <img
@@ -35,10 +37,10 @@ function Gauge({ skill }: { skill: Skill }) {
           return (
             <line
               key={i}
-              x1={120 + Math.cos(angle) * inner}
-              y1={120 + Math.sin(angle) * inner}
-              x2={120 + Math.cos(angle) * outer}
-              y2={120 + Math.sin(angle) * outer}
+              x1={formatSvgNumber(120 + Math.cos(angle) * inner)}
+              y1={formatSvgNumber(120 + Math.sin(angle) * inner)}
+              x2={formatSvgNumber(120 + Math.cos(angle) * outer)}
+              y2={formatSvgNumber(120 + Math.sin(angle) * outer)}
               stroke="currentColor"
               strokeWidth={1}
               className={cn(
