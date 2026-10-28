@@ -2,10 +2,11 @@ const icon = (slug: string, variant = 'default') =>
   `https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/${slug}/${variant}.svg`
 
 export const profile = {
-  name: 'Ahad Hossain',
+  name: 'Masud Rana',
   role: 'Full Stack Developer',
   location: 'Dhaka, Bangladesh',
-  email: 'hello@ahadhossain.dev',
+  email: 'hello@masudrana.dev',
+  image: '/profile.png',
   socials: [
     { label: 'GitHub', href: 'https://github.com' },
     { label: 'LinkedIn', href: 'https://linkedin.com' },

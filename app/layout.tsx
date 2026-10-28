@@ -13,7 +13,7 @@ const instrumentSerif = Instrument_Serif({
 })
 
 export const metadata: Metadata = {
-  title: 'Ahad Hossain — Full Stack Developer',
+  title: 'Masud Rana — Full Stack Developer',
   description:
     'Full stack developer crafting fast, beautiful products with React, Next.js, React Native, Node.js, PostgreSQL and MongoDB.',
   generator: 'v0.app',
